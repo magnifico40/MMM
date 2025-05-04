@@ -1,7 +1,6 @@
 import numpy as np
 import scipy
 import matplotlib.pyplot as plt
-from functions import *
 
 def squareSignal(frequency, readTime, amplitude, dutyCycle = 0.5):
     value = amplitude * scipy.signal.square(2 * np.pi * frequency * readTime, duty = dutyCycle)
