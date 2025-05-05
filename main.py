@@ -2,17 +2,21 @@ import numpy as np
 import scipy
 import matplotlib.pyplot as plt
 
+
 def squareSignal(frequency, readTime, amplitude, dutyCycle = 0.5):
     value = amplitude * scipy.signal.square(2 * np.pi * frequency * readTime, duty = dutyCycle)
     return value
+
 
 def sawToothSignal(frequency, readTime, amplitude):
     value = amplitude* scipy.signal.sawtooth(2 * np.pi * frequency * readTime)
     return value
 
+
 def sinSignal(frequency, readTime, amplitude):
     value = amplitude * np.sin(2 * np.pi * frequency * readTime)
     return value
+
 
 def f(x1, x2, t, function):
     global k, b, J1, J2, n, frequency, amplitude
@@ -26,8 +30,10 @@ def f(x1, x2, t, function):
 
     return  a * x1 + b * x2  + c * Tm
 
+
 def g(x1, x2, t):
     return x2
+
 
 def RK4(x1_0, x2_0, t0, h, function, iterations):
     x1Values = []
@@ -58,10 +64,26 @@ def RK4(x1_0, x2_0, t0, h, function, iterations):
     return x1Values, x2Values, tValues
 
 
+def Euler(x1_0, x2_0, h, fun, iter):
+    x1Values = [x1_0]
+    x2Values = [x2_0]
+    t0 = 0
+    tValues = [t0]
+
+    for i in range(iter):
+        t0 += h
+        lastX1_0 = x1_0
+        x1_0 = x1_0 + h * f(x1_0, x2_0, t0, fun)
+        x2_0 = abs(lastX1_0-x1_0)/h
+        x1Values.append(x1_0)
+        x2Values.append(x2_0)
+        tValues.append(t0)
+
+    return x1Values, x2Values, tValues
 
 
 
-#parameters:
+# parameters:
 k = 1
 b = 1
 n1 = 3
@@ -70,7 +92,7 @@ n = n1/n2
 J1 = 1
 J2 = 1
 
-#initial conditions:
+# initial conditions:
 x1_0 = 0
 x2_0 = 0
 t0 = 0
@@ -78,25 +100,35 @@ x1Values = []
 x2Values = []
 tValues = []
 
-#simulation:
-h = 0.2 #step size
-N = 100 #RK4 iterations
+# simulation:
+h = 0.01 # step size
+N = 1000 # RK4 iterations
 
-#signal auxiliary
-amplitude = 1
+# signal auxiliary
+amplitude = 10
 frequency = 2
-amplitude = 1
 
 function = 'sin'
-iterations = 100
-x1Values, x2Values, tValues = RK4(x1_0, x2_0, t0, h, function, iterations)
+iterations = N
+RKx1Values, RKx2Values, RKtValues = RK4(x1_0, x2_0, t0, h, function, iterations)
+Ex1Values, Ex2Values, EtValues = Euler(x1_0, x2_0, h, function, iterations)
 
-plt.figure(figsize=(10, 5))
-plt.plot(tValues, x1Values, label="x1 (Pozycja wału 2)")
-plt.plot(tValues, x2Values, label="x2 (Prędkość wału 2)")
+plt.figure(figsize=(10, 8))
+plt.subplot(2, 1, 1)
+plt.plot(RKtValues, RKx1Values, label="RK (Pozycja wału 2)")
+plt.plot(EtValues, Ex1Values, label="E (Pozycja wału 2)")
 plt.xlabel("Czas [s]")
 plt.ylabel("Wartości")
-plt.title("Trajektoria")
+plt.title("Trajektoria (RK4)")
+plt.legend()
+plt.grid()
+
+plt.subplot(2, 1, 2)
+plt.plot(RKtValues, RKx2Values, label="RK (Prędkość wału 2)")
+plt.plot(EtValues, Ex2Values, label="E (Prędkość wału 2)")
+plt.xlabel("Czas [s]")
+plt.ylabel("Wartości")
+plt.title("Trajektoria (Euler)")
 plt.legend()
 plt.grid()
 plt.show()
