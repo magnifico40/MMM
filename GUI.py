@@ -5,6 +5,7 @@ from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
 from matplotlib.backends.backend_wxagg import NavigationToolbar2WxAgg as NavigationToolbar
 from matplotlib.figure import Figure
 
+
 class ChartPanel(wx.Panel):
     def __init__(self, parent):
         super().__init__(parent)
