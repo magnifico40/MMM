@@ -22,7 +22,7 @@ def f(x1, x2, t, function): #speed
     global k, b, J1, J2, n, frequency, amplitude, funTime
     a = -b / (J2 + n**2 * J1) #(k/n - k) / (J2 + J1)
     bb = -k / (J2 + n**2 * J1) #(b/n - b) / (J2 + J1)
-    c = 1/n #n / (J2 + J1) 
+    c = (1/n) / (J2 + n**2 *J1) #n / (J2 + J1) 
     if t <= funTime:
         if function == 'square': Tm = squareSignal(frequency, t, amplitude)
         elif function == 'sawTooth': Tm = sawToothSignal(frequency, t, amplitude)
@@ -74,8 +74,10 @@ def Euler(x1_0, x2_0, h, fun, iter):
 
     for i in range(iter):
         t0 += h
+        lastX1_0 = x1_0
         x1_0 = x1_0 + h * g(x1_0, x2_0, t0, fun)  
         x2_0 = x2_0 + h * f(x1_0, x2_0, t0, fun)  # Poprawiona, wcześniej było: x2_0 = abs(lastX1_0-x1_0)/h, w dodatku x1 powinno byc raczej powiazane z g, x2 z f (chyba?)
+        #x2_0=abs(lastX1_0-x1_0)/h 
         x1Values.append(x1_0)
         x2Values.append(x2_0)
         tValues.append(t0)
@@ -86,7 +88,7 @@ def Euler(x1_0, x2_0, h, fun, iter):
         t0 += h
         lastX1_0 = x1_0
         x1_0 = x1_0 + h * f(x1_0, x2_0, t0, fun)
-        abs(lastX1_0-x1_0)/h                   
+        x2_0=abs(lastX1_0-x1_0)/h                   
         x1Values.append(x1_0)
         x2Values.append(x2_0)
         tValues.append(t0)
@@ -117,7 +119,7 @@ tValues = []
 
 # simulation:
 h = 0.01 # step size
-N = 1000 # RK4 iterations
+N = 10000 # RK4 iterations
 
 # signal auxiliary
 amplitude = 1
