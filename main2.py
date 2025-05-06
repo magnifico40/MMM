@@ -46,9 +46,9 @@ class Simulation:
         return value
 
     def f(self, x1, x2, t):
-        a = (self.k / self.n - self.k) / (self.J2 + self.J1)
-        b = (self.b / self.n - self.b) / (self.J2 + self.J1)
-        c = self.n / (self.J2 + self.J1)
+        a = (-self.b) / (self.J2 + self.n ** 2 * self.J1)
+        b = (-self.k) / (self.J2 + self.n ** 2 * self.J1)
+        c = (1/self.n) / (self.J2 + self.n ** 2 * self.J1)
 
         if self.function == 'square':
             Tm = self.squareSignal(t)
@@ -56,6 +56,7 @@ class Simulation:
             Tm = self.sawToothSignal(t)
         elif self.function == 'sin':
             Tm = self.sinSignal(t)
+        else: Tm = 0
 
         return a * x1 + b * x2 + c * Tm
 
@@ -70,25 +71,25 @@ class Simulation:
         x2_0 = self.x2_0
         t0 = self.t0
         for i in range(self.N):
-            t0 += self.h
             self.RKx1Values.append(x1_0)
             self.RKx2Values.append(x2_0)
             self.tValues.append(t0)
 
-            k1 = self.h * self.f(x1_0, x2_0, t0)
-            l1 = self.h * self.g(x1_0, x2_0, t0)
+            k1 = self.h * self.g(x1_0, x2_0, t0)
+            l1 = self.h * self.f(x1_0, x2_0, t0)
 
-            k2 = self.h * self.f(x1_0 + self.h / 2, x2_0 + k1 / 2, t0 + l1 / 2)
-            l2 = self.h * self.g(x1_0 + self.h / 2, x2_0 + k1 / 2, t0 + l1 / 2)
+            k2 = self.h * self.g(x1_0 + self.h / 2, x2_0 + k1 / 2, t0 + l1 / 2)
+            l2 = self.h * self.f(x1_0 + self.h / 2, x2_0 + k1 / 2, t0 + l1 / 2)
 
-            k3 = self.h * self.f(x1_0 + self.h / 2, x2_0 + k2 / 2, t0 + l2 / 2)
-            l3 = self.h * self.g(x1_0 + self.h / 2, x2_0 + k2 / 2, t0 + l2 / 2)
+            k3 = self.h * self.g(x1_0 + self.h / 2, x2_0 + k2 / 2, t0 + l2 / 2)
+            l3 = self.h * self.f(x1_0 + self.h / 2, x2_0 + k2 / 2, t0 + l2 / 2)
 
-            k4 = self.h * self.f(x1_0 + self.h, x2_0 + k3, t0 + l3)
-            l4 = self.h * self.g(x1_0 + self.h, x2_0 + k3, t0 + l3)
+            k4 = self.h * self.g(x1_0 + self.h, x2_0 + k3, t0 + l3)
+            l4 = self.h * self.f(x1_0 + self.h, x2_0 + k3, t0 + l3)
 
-            x1_0 = x1_0 + 1 / 6 * (l1 + 2 * l2 + 2 * l3 + l4)
-            x2_0 = x2_0 + 1 / 6 * (k1 + 2 * k2 + 2 * k3 + k4)
+            x1_0 = x1_0 + (k1 + 2*k2 + 2*k3 + k4) / 6
+            x2_0 = x2_0 + (l1 + 2*l2 + 2*l3 + l4) / 6
+            t0 += self.h
 
     def Euler(self):
         self.Ex1Values.clear()
@@ -114,12 +115,19 @@ class Simulation:
 
 
 a = Simulation()
+a.RK4()
 a.Euler()
-x1Data, x2Data, tData = a.getEulerChartData()
+x1Data, x2Data, x1tData = a.getRK4ChartData()
+y1Data, y2Data, y1tData = a.getEulerChartData()
 
+"""
+
+"""
 plt.figure(figsize=(10, 8))
-plt.plot(tData, x1Data, label="RK (Pozycja wału 2)")
-plt.plot(tData, x2Data, label="E (Pozycja wału 2)")
+plt.plot(x1tData, x1Data, label="Położenie  RK4 ")
+plt.plot(x1tData, x2Data, label="Prędkość RK4")
+plt.plot(y1tData, x2Data, label="Położenie Euler")
+plt.plot(y1tData, x2Data, label="Prędkość Euler")
 plt.xlabel("Czas [s]")
 plt.ylabel("Wartości")
 plt.title("Trajektoria (RK4)")
@@ -127,3 +135,27 @@ plt.legend()
 plt.grid()
 
 plt.show()
+
+"""
+#Alternative View for testing
+
+plt.figure(figsize=(10, 8))
+plt.subplot(2, 1, 1)
+plt.plot(x1tData, x1Data, label="RK4 (Pozycja wału 2)")
+plt.plot(y1tData, y1Data, label="E (Pozycja wału 2)")
+plt.xlabel("Czas [s]")
+plt.ylabel("Angle [rad]")
+plt.title("Trajektoria (RK4)")
+plt.legend()
+plt.grid()
+
+plt.subplot(2, 1, 2)
+plt.plot(x1tData, x2Data, label="RK4 (Prędkość wału 2)")
+plt.plot(y1tData, y2Data, label="E (Prędkość wału 2)")
+plt.xlabel("Czas [s]")
+plt.ylabel("Speed [rad/s]")
+plt.title("Trajektoria (Euler)")
+plt.legend()
+plt.grid()
+plt.show()
+"""
