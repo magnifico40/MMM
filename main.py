@@ -119,7 +119,7 @@ tValues = []
 
 # simulation:
 h = 0.01 # step size
-N = 10000 # RK4 iterations
+N = 100 # RK4 iterations
 
 # signal auxiliary
 amplitude = 1
