@@ -19,14 +19,16 @@ def sinSignal(frequency, readTime, amplitude):
 
 
 def f(x1, x2, t, function): #speed
-    global k, b, J1, J2, n, frequency, amplitude
-    a = (k/n - k) / (J2 + J1)
-    bb = (b/n - b) / (J2 + J1)
-    c = n / (J2 + J1) 
-    
-    if function == 'square': Tm = squareSignal(frequency, t, amplitude)
-    elif function == 'sawTooth': Tm = sawToothSignal(frequency, t, amplitude)
-    elif function == 'sin': Tm = sinSignal(frequency, t, amplitude)
+    global k, b, J1, J2, n, frequency, amplitude, funTime
+    a = -b / (J2 + n**2 * J1) #(k/n - k) / (J2 + J1)
+    bb = -k / (J2 + n**2 * J1) #(b/n - b) / (J2 + J1)
+    c = 1/n #n / (J2 + J1) 
+    if t <= funTime:
+        if function == 'square': Tm = squareSignal(frequency, t, amplitude)
+        elif function == 'sawTooth': Tm = sawToothSignal(frequency, t, amplitude)
+        elif function == 'sin': Tm = sinSignal(frequency, t, amplitude)
+        else: Tm = 0
+    else: Tm = 0
 
     return  a * x1 + bb * x2  + c * Tm
 
@@ -96,13 +98,14 @@ def Euler(x1_0, x2_0, h, fun, iter):
 
 
 # parameters:
-k = 0.5
-b = 0.1
-n1 = 3
-n2 = 5
+k = 5
+b = 5
+n1 = 5
+n2 = 3
 n = n1/n2
 J1 = 1
 J2 = 1
+#by był stabilny
 
 # initial conditions:
 x1_0 = 0
@@ -119,6 +122,7 @@ N = 1000 # RK4 iterations
 # signal auxiliary
 amplitude = 1
 frequency = 0.5
+funTime = 2
 
 function = 'square'
 iterations = N
