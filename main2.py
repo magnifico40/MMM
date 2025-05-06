@@ -1,13 +1,14 @@
 import numpy as np
 import scipy
+import matplotlib.pyplot as plt
 
 class Simulation:
     def __init__(self):
         # parameters:
-        self.k = 1
-        self.b = 1
-        self.n1 = 3
-        self.n2 = 5
+        self.k = 5
+        self.b = 5
+        self.n1 = 5
+        self.n2 = 3
         self.n = self.n1 / self.n2
         self.J1 = 1
         self.J2 = 1
@@ -27,8 +28,8 @@ class Simulation:
         self.N = 1000  # RK4 iterations
 
         # signal auxiliary
-        self.amplitude = 10
-        self.frequency = 2
+        self.amplitude = 1
+        self.frequency = 0.5
         self.function = 'sin'
         self.duty_cycle = 0.5
 
@@ -61,33 +62,34 @@ class Simulation:
     def g(self, x1, x2, t):
         return x2
 
-    def RK4(self, x1_0, x2_0, t0, h, function, iterations):
+    def RK4(self, t0):
         self.RKx1Values.clear()
         self.RKx2Values.clear()
         self.tValues.clear()
-
-        for i in range(iterations):
-            t0 += h
+        x1_0 = self.x1_0
+        x2_0 = self.x2_0
+        for i in range(self.N):
+            t0 += self.h
             self.RKx1Values.append(x1_0)
             self.RKx2Values.append(x2_0)
             self.tValues.append(t0)
 
-            k1 = h * self.f(x1_0, x2_0, t0, function)
-            l1 = h * self.g(x1_0, x2_0, t0)
+            k1 = self.h * self.f(x1_0, x2_0, t0)
+            l1 = self.h * self.g(x1_0, x2_0, t0)
 
-            k2 = h * self.f(x1_0 + h / 2, x2_0 + k1 / 2, t0 + l1 / 2, function)
-            l2 = h * self.g(x1_0 + h / 2, x2_0 + k1 / 2, t0 + l1 / 2)
+            k2 = self.h * self.f(x1_0 + self.h / 2, x2_0 + k1 / 2, t0 + l1 / 2)
+            l2 = self.h * self.g(x1_0 + self.h / 2, x2_0 + k1 / 2, t0 + l1 / 2)
 
-            k3 = h * self.f(x1_0 + h / 2, x2_0 + k2 / 2, t0 + l2 / 2, function)
-            l3 = h * self.g(x1_0 + h / 2, x2_0 + k2 / 2, t0 + l2 / 2)
+            k3 = self.h * self.f(x1_0 + self.h / 2, x2_0 + k2 / 2, t0 + l2 / 2)
+            l3 = self.h * self.g(x1_0 + self.h / 2, x2_0 + k2 / 2, t0 + l2 / 2)
 
-            k4 = h * self.f(x1_0 + h, x2_0 + k3, t0 + l3, function)
-            l4 = h * self.g(x1_0 + h, x2_0 + k3, t0 + l3)
+            k4 = self.h * self.f(x1_0 + self.h, x2_0 + k3, t0 + l3)
+            l4 = self.h * self.g(x1_0 + self.h, x2_0 + k3, t0 + l3)
 
             x1_0 = x1_0 + 1 / 6 * (l1 + 2 * l2 + 2 * l3 + l4)
             x2_0 = x2_0 + 1 / 6 * (k1 + 2 * k2 + 2 * k3 + k4)
 
-    def Euler(self, x1_0, x2_0, t0, h, fun, iter):
+    def Euler(self, x1_0, x2_0, t0, h, iter):
         self.Ex1Values.clear()
         self.Ex2Values.clear()
         self.tValues.clear()
@@ -97,8 +99,8 @@ class Simulation:
             self.Ex2Values.append(x2_0)
             self.tValues.append(t0)
             t0 += h
-            x1_0 = x1_0 + h * self.g(x1_0, x2_0, t0, fun)
-            x2_0 = x2_0 + h * self.f(x1_0, x2_0, t0, fun)
+            x1_0 = x1_0 + h * self.g(x1_0, x2_0, t0)
+            x2_0 = x2_0 + h * self.f(x1_0, x2_0, t0)
 
     def getRK4ChartData(self):
         return self.RKx1Values, self.RKx2Values, self.tValues
@@ -107,3 +109,17 @@ class Simulation:
         return self.Ex1Values, self.Ex2Values, self.tValues
 
 
+a = Simulation()
+a.RK4(0)
+x1Data, x2Data, tData = a.getRK4ChartData()
+
+plt.figure(figsize=(10, 8))
+plt.plot(tData, x1Data, label="RK (Pozycja wału 2)")
+plt.plot(tData, x2Data, label="E (Pozycja wału 2)")
+plt.xlabel("Czas [s]")
+plt.ylabel("Wartości")
+plt.title("Trajektoria (RK4)")
+plt.legend()
+plt.grid()
+
+plt.show()
