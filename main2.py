@@ -1,6 +1,5 @@
 import numpy as np
 import scipy
-import matplotlib.pyplot as plt
 
 class Simulation:
     def __init__(self):
@@ -31,9 +30,10 @@ class Simulation:
         self.amplitude = 10
         self.frequency = 2
         self.function = 'sin'
+        self.duty_cycle = 0.5
 
-    def squareSignal(self, readTime, dutyCycle=0.5):
-        value = self.amplitude * scipy.signal.square(2 * np.pi * self.frequency * readTime, duty=dutyCycle)
+    def squareSignal(self, readTime):
+        value = self.amplitude * scipy.signal.square(2 * np.pi * self.frequency * readTime, duty=self.dutyCycle)
         return value
 
     def sawToothSignal(self, readTime):
