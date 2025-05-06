@@ -62,12 +62,13 @@ class Simulation:
     def g(self, x1, x2, t):
         return x2
 
-    def RK4(self, t0):
+    def RK4(self):
         self.RKx1Values.clear()
         self.RKx2Values.clear()
         self.tValues.clear()
         x1_0 = self.x1_0
         x2_0 = self.x2_0
+        t0 = self.t0
         for i in range(self.N):
             t0 += self.h
             self.RKx1Values.append(x1_0)
@@ -89,18 +90,21 @@ class Simulation:
             x1_0 = x1_0 + 1 / 6 * (l1 + 2 * l2 + 2 * l3 + l4)
             x2_0 = x2_0 + 1 / 6 * (k1 + 2 * k2 + 2 * k3 + k4)
 
-    def Euler(self, x1_0, x2_0, t0, h, iter):
+    def Euler(self):
         self.Ex1Values.clear()
         self.Ex2Values.clear()
         self.tValues.clear()
-
-        for i in range(iter):
+        x1_0 = self.x1_0
+        x2_0 = self.x2_0
+        t0 = self.t0
+        for i in range(self.N):
+            t0 += self.h
             self.Ex1Values.append(x1_0)
             self.Ex2Values.append(x2_0)
             self.tValues.append(t0)
-            t0 += h
-            x1_0 = x1_0 + h * self.g(x1_0, x2_0, t0)
-            x2_0 = x2_0 + h * self.f(x1_0, x2_0, t0)
+
+            x1_0 = x1_0 + self.h * self.g(x1_0, x2_0, t0)
+            x2_0 = x2_0 + self.h * self.f(x1_0, x2_0, t0)
 
     def getRK4ChartData(self):
         return self.RKx1Values, self.RKx2Values, self.tValues
@@ -110,8 +114,8 @@ class Simulation:
 
 
 a = Simulation()
-a.RK4(0)
-x1Data, x2Data, tData = a.getRK4ChartData()
+a.Euler()
+x1Data, x2Data, tData = a.getEulerChartData()
 
 plt.figure(figsize=(10, 8))
 plt.plot(tData, x1Data, label="RK (Pozycja wału 2)")
