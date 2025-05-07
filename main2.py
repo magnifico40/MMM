@@ -25,17 +25,18 @@ class Simulation:
         self.tValues = []
 
         # simulation:
-        self.h = 0.01  # step size
-        self.N = 1000  # RK4 iterations
+        self.h = 0.001  # step size
+        self.simTime = 10
+        self.N = int(self.simTime // self.h)  # iterations
 
         # signal auxiliary
         self.amplitude = 1
         self.frequency = 0.5
-        self.function = 'sin'
+        self.function = 'square'
         self.duty_cycle = 0.5
 
     def __squareSignal(self, readTime):
-        value = self.amplitude * scipy.signal.square(2 * np.pi * self.frequency * readTime, duty=self.dutyCycle)
+        value = self.amplitude * scipy.signal.square(2 * np.pi * self.frequency * readTime, duty=self.duty_cycle)
         return value
 
     def __sawToothSignal(self, readTime):
@@ -53,7 +54,7 @@ class Simulation:
 
         if self.function == 'square':
             Tm = self.__squareSignal(t)
-        elif self.function == 'sawTooth':
+        elif self.function == 'sawtooth':
             Tm = self.__sawToothSignal(t)
         elif self.function == 'sin':
             Tm = self.__sinSignal(t)
@@ -116,8 +117,28 @@ class Simulation:
         self.__Euler()
         return self.Ex1Values, self.Ex2Values, self.tValues
 
-    def setIterationsNumber(self, num):
-        self.N = num
+    def setSimulationTime(self, num):
+        self.simTime = num
+        self.N = int(self.simTime // self.h)
+
+    def setStepSizeNumber(self, num):
+        self.h = num*0.001
+        self.N = int(self.simTime // self.h)
+
+    def setInputFunctionType(self, type):
+        self.function = type
+
+    def setKValue(self, k_val):
+        self.k = k_val
+
+    def setBValue(self, b_val):
+        self.b = b_val
+
+    def setN1Value(self, n1_val):
+        self.n1 = n1_val
+
+    def setN2Value(self, n2_val):
+        self.n2 = n2_val
 
 '''
 a = Simulation()
