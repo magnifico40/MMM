@@ -27,7 +27,7 @@ class Simulation:
         # simulation:
         self.h = 0.001  # step size
         self.simTime = 10
-        self.N = int(self.simTime // self.h)  # iterations
+        self.iter = int(self.simTime // self.h)  # iterations
 
         # signal auxiliary
         self.amplitude = 1
@@ -72,7 +72,7 @@ class Simulation:
         x1_0 = self.x1_0
         x2_0 = self.x2_0
         t0 = self.t0
-        for i in range(self.N):
+        for i in range(self.iter):
             self.RKx1Values.append(x1_0)
             self.RKx2Values.append(x2_0)
             self.tValues.append(t0)
@@ -100,7 +100,7 @@ class Simulation:
         x1_0 = self.x1_0
         x2_0 = self.x2_0
         t0 = self.t0
-        for i in range(self.N):
+        for i in range(self.iter):
             t0 += self.h
             self.Ex1Values.append(x1_0)
             self.Ex2Values.append(x2_0)
@@ -119,11 +119,11 @@ class Simulation:
 
     def setSimulationTime(self, num):
         self.simTime = num
-        self.N = int(self.simTime // self.h)
+        self.iter = int(self.simTime // self.h)
 
     def setStepSizeNumber(self, num):
         self.h = num*0.001
-        self.N = int(self.simTime // self.h)
+        self.iter = int(self.simTime // self.h)
 
     def setInputFunctionType(self, type):
         self.function = type
