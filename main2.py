@@ -136,9 +136,11 @@ class Simulation:
 
     def setN1Value(self, n1_val):
         self.n1 = n1_val
+        self.n = self.n1/self.n2
 
     def setN2Value(self, n2_val):
         self.n2 = n2_val
+        self.n = self.n1/self.n2
 
 '''
 a = Simulation()
