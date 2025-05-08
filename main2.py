@@ -151,7 +151,7 @@ y1Data, y2Data, y1tData = a.getEulerChartData()
 
 """
 
-"""
+
 plt.figure(figsize=(10, 8))
 plt.plot(x1tData, x1Data, label="Położenie  RK4 ")
 plt.plot(x1tData, x2Data, label="Prędkość RK4")
@@ -165,7 +165,7 @@ plt.grid()
 
 plt.show()
 
-"""
+
 #Alternative View for testing
 
 plt.figure(figsize=(10, 8))
