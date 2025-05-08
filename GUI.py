@@ -211,7 +211,7 @@ class ChartFrame(wx.Frame):
         self.chartData.setKValue(self.k_slider.GetValue())
 
     def on_b_change(self, event):
-        self.chartData.setKValue(self.b_slider.GetValue())
+        self.chartData.setBValue(self.b_slider.GetValue())
 
     def on_n1_change(self, event):
         self.chartData.setN1Value(self.n1_slider.GetValue())
