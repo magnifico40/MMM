@@ -31,9 +31,10 @@ class Simulation:
 
         # signal auxiliary
         self.amplitude = 1
-        self.frequency = 0.5
+        self.frequency = 1
         self.function = 'square'
         self.duty_cycle = 0.5
+        self.signal_time = 2
 
     def __squareSignal(self, readTime):
         value = self.amplitude * scipy.signal.square(2 * np.pi * self.frequency * readTime, duty=self.duty_cycle)
@@ -133,6 +134,12 @@ class Simulation:
 
     def setInputSignalFrequency(self, freq):
         self.frequency = freq
+
+    def setSignalDutyCycle(self, duty_cycle):
+        self.duty_cycle = duty_cycle * 0.01
+
+    def setSignalTime(self, sig_time):
+        self.signal_time = sig_time
 
     def setKValue(self, k_val):
         self.k = k_val

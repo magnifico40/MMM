@@ -1,21 +1,14 @@
 import wx
-import numpy as np
-import matplotlib.pyplot as plt
+import wx.lib.scrolledpanel as scrolled
 from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
-from matplotlib.backends.backend_wxagg import NavigationToolbar2WxAgg as NavigationToolbar
 from matplotlib.figure import Figure
-
-
-import numpy as np
-import scipy
-import matplotlib.pyplot as plt
 from main2 import Simulation
 
 class ChartPanel(wx.Panel):
     def __init__(self, parent):
         super().__init__(parent)
 
-        self.figure = Figure(figsize=(5, 4), dpi=100)
+        self.figure = Figure(figsize=(1, 1), dpi=100)
         self.canvas = FigureCanvas(self, -1, self.figure)
 
         sizer = wx.BoxSizer(wx.VERTICAL)
@@ -30,14 +23,17 @@ class ChartFrame(wx.Frame):
 
         self.chartData = Simulation()
 
-        self.splitter = wx.SplitterWindow(self)
+        main_panel = wx.Panel(self)
+        main_sizer = wx.BoxSizer(wx.HORIZONTAL)
 
-        self.control_panel = wx.Panel(self.splitter)
+        # Left side: Scrolled Control Panel
+        control_panel = scrolled.ScrolledPanel(main_panel, -1, size=(350, -1))
+        control_panel.SetupScrolling(scroll_x=False, scroll_y=True)
         control_sizer = wx.BoxSizer(wx.VERTICAL)
 
         # Input Signals parameters group
 
-        signal_box = wx.StaticBox(self.control_panel, label="Input Signal Parameters")
+        signal_box = wx.StaticBox(control_panel, label="Input Signal Parameters")
         signal_sizer = wx.StaticBoxSizer(signal_box, wx.VERTICAL)
         control_sizer.Add(signal_sizer, 0, wx.EXPAND | wx.ALL, 5)
 
@@ -46,7 +42,7 @@ class ChartFrame(wx.Frame):
         chart_sizer = wx.StaticBoxSizer(chart_box, wx.VERTICAL)
         self.signal_type = ["square", "sawtooth", "sin"]
         self.chart_radio = wx.RadioBox(
-            self.control_panel,
+            chart_box,
             choices=self.signal_type,
             majorDimension=1,
             style=wx.RA_SPECIFY_COLS
@@ -56,11 +52,11 @@ class ChartFrame(wx.Frame):
         signal_sizer.Add(chart_sizer, 0, wx.EXPAND | wx.ALL, 10)
 
         #  Amplitude Slider
-        ampl_box = wx.StaticBox(self.control_panel, label="Signal Amplitude")
+        ampl_box = wx.StaticBox(signal_box, label="Signal Amplitude")
         ampl_sizer = wx.StaticBoxSizer(ampl_box, wx.VERTICAL)
         self.ampl_slider = wx.Slider(
-            self.control_panel,
-            value=10,
+            ampl_box,
+            value=1,
             minValue=1,
             maxValue=20,
             style=wx.SL_HORIZONTAL | wx.SL_LABELS
@@ -70,11 +66,11 @@ class ChartFrame(wx.Frame):
         signal_sizer.Add(ampl_sizer, 0, wx.EXPAND | wx.ALL, 10)
 
         #  Frequency Slider
-        freq_box = wx.StaticBox(self.control_panel, label="Signal Frequency")
+        freq_box = wx.StaticBox(signal_box, label="Signal Frequency")
         freq_sizer = wx.StaticBoxSizer(freq_box, wx.VERTICAL)
         self.freq_slider = wx.Slider(
-            self.control_panel,
-            value=10,
+            freq_box,
+            value=1,
             minValue=1,
             maxValue=20,
             style=wx.SL_HORIZONTAL | wx.SL_LABELS
@@ -83,11 +79,39 @@ class ChartFrame(wx.Frame):
         freq_sizer.Add(self.freq_slider, 0, wx.EXPAND | wx.ALL, 5)
         signal_sizer.Add(freq_sizer, 0, wx.EXPAND | wx.ALL, 10)
 
+        #  Signal Time Slider
+        sigTime_box = wx.StaticBox(signal_box, label="Input Signal Time")
+        sigTime_sizer = wx.StaticBoxSizer(sigTime_box, wx.VERTICAL)
+        self.sigTime_slider = wx.Slider(
+            sigTime_box,
+            value=1,
+            minValue=1,
+            maxValue=20,
+            style=wx.SL_HORIZONTAL | wx.SL_LABELS
+        )
+        self.sigTime_slider.Bind(wx.EVT_SLIDER, self.on_signal_time_change)  # slider event
+        sigTime_sizer.Add(self.sigTime_slider, 0, wx.EXPAND | wx.ALL, 5)
+        signal_sizer.Add(sigTime_sizer, 0, wx.EXPAND | wx.ALL, 10)
+
+        #  Duty Cycle Slider
+        dutyCycle_box = wx.StaticBox(signal_box, label="Input Signal Duty Cycle")
+        dutyCycle_sizer = wx.StaticBoxSizer(dutyCycle_box, wx.VERTICAL)
+        self.dutyCycle_slider = wx.Slider(
+            dutyCycle_box,
+            value=50,
+            minValue=1,
+            maxValue=100,
+            style=wx.SL_HORIZONTAL | wx.SL_LABELS
+        )
+        self.dutyCycle_slider.Bind(wx.EVT_SLIDER, self.on_duty_cycle_change)  # slider event
+        dutyCycle_sizer.Add(self.dutyCycle_slider, 0, wx.EXPAND | wx.ALL, 5)
+        signal_sizer.Add(dutyCycle_sizer, 0, wx.EXPAND | wx.ALL, 10)
+
         # simulation time slider
-        iter_box = wx.StaticBox(self.control_panel, label="Simulation Time")
+        iter_box = wx.StaticBox(control_panel, label="Simulation Time")
         iter_sizer = wx.StaticBoxSizer(iter_box, wx.VERTICAL)
         self.iter_slider = wx.Slider(
-            self.control_panel,
+            iter_box,
             value=10,
             minValue=1,
             maxValue=20,
@@ -98,10 +122,10 @@ class ChartFrame(wx.Frame):
         control_sizer.Add(iter_sizer, 0, wx.EXPAND | wx.ALL, 10)
 
         # step_size slider
-        step_size_box = wx.StaticBox(self.control_panel, label="Step size")
+        step_size_box = wx.StaticBox(control_panel, label="Step size")
         step_size_sizer = wx.StaticBoxSizer(step_size_box, wx.VERTICAL)
         self.step_size_slider = wx.Slider(
-            self.control_panel,
+            step_size_box,
             value=10,
             minValue=1,
             maxValue=100,
@@ -112,10 +136,10 @@ class ChartFrame(wx.Frame):
         control_sizer.Add(step_size_sizer, 0, wx.EXPAND | wx.ALL, 10)
 
         # k slider
-        k_box = wx.StaticBox(self.control_panel, label="k value")
+        k_box = wx.StaticBox(control_panel, label="k value")
         k_sizer = wx.StaticBoxSizer(k_box, wx.VERTICAL)
         self.k_slider = wx.Slider(
-            self.control_panel,
+            k_box,
             value=1,
             minValue=1,
             maxValue=10,
@@ -126,10 +150,10 @@ class ChartFrame(wx.Frame):
         control_sizer.Add(k_sizer, 0, wx.EXPAND | wx.ALL, 10)
 
         # b slider
-        b_box = wx.StaticBox(self.control_panel, label="b value")
+        b_box = wx.StaticBox(control_panel, label="b value")
         b_sizer = wx.StaticBoxSizer(b_box, wx.VERTICAL)
         self.b_slider = wx.Slider(
-            self.control_panel,
+            b_box,
             value=1,
             minValue=1,
             maxValue=10,
@@ -140,10 +164,10 @@ class ChartFrame(wx.Frame):
         control_sizer.Add(b_sizer, 0, wx.EXPAND | wx.ALL, 10)
 
         # n1 slider
-        n1_box = wx.StaticBox(self.control_panel, label="n1 value")
+        n1_box = wx.StaticBox(control_panel, label="n1 value")
         n1_sizer = wx.StaticBoxSizer(n1_box, wx.VERTICAL)
         self.n1_slider = wx.Slider(
-            self.control_panel,
+            n1_box,
             value=5,
             minValue=1,
             maxValue=50,
@@ -154,10 +178,10 @@ class ChartFrame(wx.Frame):
         control_sizer.Add(n1_sizer, 0, wx.EXPAND | wx.ALL, 10)
 
         # n2 slider
-        n2_box = wx.StaticBox(self.control_panel, label="n2 value")
+        n2_box = wx.StaticBox(control_panel, label="n2 value")
         n2_sizer = wx.StaticBoxSizer(n2_box, wx.VERTICAL)
         self.n2_slider = wx.Slider(
-            self.control_panel,
+            n2_box,
             value=3,
             minValue=1,
             maxValue=50,
@@ -168,29 +192,26 @@ class ChartFrame(wx.Frame):
         control_sizer.Add(n2_sizer, 0, wx.EXPAND | wx.ALL, 10)
 
         # Button
-        self.update_btn = wx.Button(self.control_panel, label="Update chart")
+        self.update_btn = wx.Button(control_panel, label="Update chart")
         self.update_btn.Bind(wx.EVT_BUTTON, self.generate_chart)  # random btn event
         control_sizer.Add(self.update_btn, 0, wx.EXPAND | wx.ALL, 10)
 
-        self.control_panel.SetSizer(control_sizer)
+        control_panel.SetSizer(control_sizer)
 
-        self.v_splitter = wx.SplitterWindow(self.splitter)
+        self.v_splitter = wx.SplitterWindow(main_panel)
         # Matplot panel
         self.plot1_panel = ChartPanel(self.v_splitter)
         self.plot2_panel = ChartPanel(self.v_splitter)
-
-        self.splitter.SplitVertically(self.control_panel, self.v_splitter)
-        self.splitter.SetMinimumPaneSize(200)
-        self.splitter.SetSashPosition(350)
 
         self.v_splitter.SplitHorizontally(self.plot1_panel, self.plot2_panel)
         self.v_splitter.SetMinimumPaneSize(100)
         self.v_splitter.SetSashPosition(self.GetSize().GetHeight() // 2)
         self.Bind(wx.EVT_SIZE, self.OnSize)
 
-        frame_sizer = wx.BoxSizer(wx.VERTICAL)
-        frame_sizer.Add(self.splitter, 1, wx.EXPAND)
-        self.SetSizer(frame_sizer)
+        main_sizer.Add(control_panel, 0, wx.EXPAND | wx.ALL, 10)
+        main_sizer.Add(self.v_splitter, 1, wx.EXPAND | wx.ALL, 10)
+
+        main_panel.SetSizer(main_sizer)
 
         self.update_chart()
 
@@ -207,6 +228,30 @@ class ChartFrame(wx.Frame):
         self.plot1_panel.figure.clear()
         self.plot2_panel.figure.clear()
 
+        dataX1, dataX2, dataT = self.chartData.getRK4ChartData()
+        EdataX1, EdataX2, EdataT = self.chartData.getEulerChartData()
+
+        ax = self.plot1_panel.figure.add_subplot(111)
+        ax.plot(dataT, dataX1, color='blue', label='Position  RK4')
+        ax.plot(dataT, EdataX1, color='orange', label='Position Euler')
+
+        ax.grid(True)
+        ax.set_xlabel('Time axis [s]')
+        ax.set_ylabel('Value')
+        ax.set_title('Position Chart')
+        ax.legend()
+
+        ax = self.plot2_panel.figure.add_subplot(111)
+        ax.plot(EdataT, dataX2, color='red', label='Speed  RK4')
+        ax.plot(EdataT, EdataX2, color='green', label='Speed Euler')
+
+        ax.grid(True)
+        ax.set_xlabel('Time axis')
+        ax.set_ylabel('Value')
+        ax.set_title('Speed Chart')
+        ax.legend()
+
+        '''
         dataX1, dataX2, dataT = self.chartData.getRK4ChartData()
         ax = self.plot1_panel.figure.add_subplot(111)
         ax.plot(dataT, dataX1, color='blue', label= 'Position  RK4')
@@ -228,7 +273,7 @@ class ChartFrame(wx.Frame):
         ax.set_ylabel('Value')
         ax.set_title('Euler Chart')
         ax.legend()
-
+        '''
         self.plot1_panel.canvas.draw()
         self.plot2_panel.canvas.draw()
 
@@ -243,6 +288,12 @@ class ChartFrame(wx.Frame):
 
     def on_signal_frequency_change(self, event):
         self.chartData.setInputSignalFrequency(self.freq_slider.GetValue())
+
+    def on_duty_cycle_change(self, event):
+        self.chartData.setSignalDutyCycle(self.dutyCycle_slider.GetValue())
+
+    def on_signal_time_change(self, event):
+        self.chartData.setSignalTime(self.sigTime_slider.GetValue())
 
     def on_iter_change(self, event):
         self.chartData.setSimulationTime(self.iter_slider.GetValue())
