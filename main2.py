@@ -54,14 +54,17 @@ class Simulation:
         c = (1/self.n) / (self.J2 + self.n ** 2 * self.J1)
 
         if self.function == 'square':
-            Tm = self.__squareSignal(t)
+            if t <= self.signal_time:
+                tm = self.__squareSignal(t)
+            else:
+                tm = 0
         elif self.function == 'sawtooth':
-            Tm = self.__sawToothSignal(t)
+            tm = self.__sawToothSignal(t)
         elif self.function == 'sin':
-            Tm = self.__sinSignal(t)
-        else: Tm = 0
+            tm = self.__sinSignal(t)
+        else: tm = 0
 
-        return a * x1 + b * x2 + c * Tm
+        return a * x1 + b * x2 + c * tm
 
     def __g(self, x1, x2, t):
         return x2
