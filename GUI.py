@@ -193,6 +193,8 @@ class ChartFrame(wx.Frame):
         self.SetSizer(frame_sizer)
 
         self.update_chart()
+
+        self.Centre()
         self.Maximize(True)
 
     def OnSize(self, event):
@@ -207,23 +209,25 @@ class ChartFrame(wx.Frame):
 
         dataX1, dataX2, dataT = self.chartData.getRK4ChartData()
         ax = self.plot1_panel.figure.add_subplot(111)
-        ax.plot(dataT, dataX1, color='blue')
-        ax.plot(dataT, dataX2, color='orange')
+        ax.plot(dataT, dataX1, color='blue', label= 'Position  RK4')
+        ax.plot(dataT, dataX2, color='orange', label = 'Speed Rk4')
 
         ax.grid(True)
-        ax.set_xlabel('Time axis')
-        ax.set_ylabel('Y axis')
+        ax.set_xlabel('Time axis [s]')
+        ax.set_ylabel('Value')
         ax.set_title('RK4 Chart')
+        ax.legend()
 
         EdataX1, EdataX2, EdataT = self.chartData.getEulerChartData()
         ax = self.plot2_panel.figure.add_subplot(111)
-        ax.plot(EdataT, EdataX1, color='red')
-        ax.plot(EdataT, EdataX2, color='green')
+        ax.plot(EdataT, EdataX1, color='red', label = 'Position Euler')
+        ax.plot(EdataT, EdataX2, color='green', label = 'Speed Euler')
 
         ax.grid(True)
         ax.set_xlabel('Time axis')
-        ax.set_ylabel('Y axis')
+        ax.set_ylabel('Value')
         ax.set_title('Euler Chart')
+        ax.legend()
 
         self.plot1_panel.canvas.draw()
         self.plot2_panel.canvas.draw()
