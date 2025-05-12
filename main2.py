@@ -128,6 +128,12 @@ class Simulation:
     def setInputFunctionType(self, type):
         self.function = type
 
+    def setInputSignalAmplitude(self, ampl):
+        self.amplitude = ampl
+
+    def setInputSignalFrequency(self, freq):
+        self.frequency = freq
+
     def setKValue(self, k_val):
         self.k = k_val
 

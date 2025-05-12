@@ -35,8 +35,14 @@ class ChartFrame(wx.Frame):
         self.control_panel = wx.Panel(self.splitter)
         control_sizer = wx.BoxSizer(wx.VERTICAL)
 
+        # Input Signals parameters group
+
+        signal_box = wx.StaticBox(self.control_panel, label="Input Signal Parameters")
+        signal_sizer = wx.StaticBoxSizer(signal_box, wx.VERTICAL)
+        control_sizer.Add(signal_sizer, 0, wx.EXPAND | wx.ALL, 5)
+
         # radio box
-        chart_box = wx.StaticBox(self.control_panel, label="Input Signal Type")
+        chart_box = wx.StaticBox(signal_box, label="Input Signal Type")
         chart_sizer = wx.StaticBoxSizer(chart_box, wx.VERTICAL)
         self.signal_type = ["square", "sawtooth", "sin"]
         self.chart_radio = wx.RadioBox(
@@ -47,7 +53,35 @@ class ChartFrame(wx.Frame):
         )
         self.chart_radio.Bind(wx.EVT_RADIOBOX, self.on_input_signal_change)  # event
         chart_sizer.Add(self.chart_radio, 0, wx.EXPAND | wx.ALL, 5)
-        control_sizer.Add(chart_sizer, 0, wx.EXPAND | wx.ALL, 10)
+        signal_sizer.Add(chart_sizer, 0, wx.EXPAND | wx.ALL, 10)
+
+        #  Amplitude Slider
+        ampl_box = wx.StaticBox(self.control_panel, label="Signal Amplitude")
+        ampl_sizer = wx.StaticBoxSizer(ampl_box, wx.VERTICAL)
+        self.ampl_slider = wx.Slider(
+            self.control_panel,
+            value=10,
+            minValue=1,
+            maxValue=20,
+            style=wx.SL_HORIZONTAL | wx.SL_LABELS
+        )
+        self.ampl_slider.Bind(wx.EVT_SLIDER, self.on_signal_amplitude_change)  # slider event
+        ampl_sizer.Add(self.ampl_slider, 0, wx.EXPAND | wx.ALL, 5)
+        signal_sizer.Add(ampl_sizer, 0, wx.EXPAND | wx.ALL, 10)
+
+        #  Frequency Slider
+        freq_box = wx.StaticBox(self.control_panel, label="Signal Frequency")
+        freq_sizer = wx.StaticBoxSizer(freq_box, wx.VERTICAL)
+        self.freq_slider = wx.Slider(
+            self.control_panel,
+            value=10,
+            minValue=1,
+            maxValue=20,
+            style=wx.SL_HORIZONTAL | wx.SL_LABELS
+        )
+        self.freq_slider.Bind(wx.EVT_SLIDER, self.on_signal_frequency_change)  # slider event
+        freq_sizer.Add(self.freq_slider, 0, wx.EXPAND | wx.ALL, 5)
+        signal_sizer.Add(freq_sizer, 0, wx.EXPAND | wx.ALL, 10)
 
         # simulation time slider
         iter_box = wx.StaticBox(self.control_panel, label="Simulation Time")
@@ -159,8 +193,7 @@ class ChartFrame(wx.Frame):
         self.SetSizer(frame_sizer)
 
         self.update_chart()
-
-        self.Centre()
+        self.Maximize(True)
 
     def OnSize(self, event):
         # When the window is resized, keep the panels equal
@@ -200,6 +233,12 @@ class ChartFrame(wx.Frame):
 
     def on_input_signal_change(self, event):
         self.chartData.setInputFunctionType(self.chart_radio.GetItemLabel(self.chart_radio.GetSelection()))
+
+    def on_signal_amplitude_change(self, event):
+        self.chartData.setInputSignalAmplitude(self.ampl_slider.GetValue())
+
+    def on_signal_frequency_change(self, event):
+        self.chartData.setInputSignalFrequency(self.freq_slider.GetValue())
 
     def on_iter_change(self, event):
         self.chartData.setSimulationTime(self.iter_slider.GetValue())
