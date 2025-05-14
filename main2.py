@@ -158,6 +158,12 @@ class Simulation:
         self.n2 = n2_val
         self.n = self.n1/self.n2
 
+    def setX1_0Value(self, x1_0_val):
+        self.x1_0 = x1_0_val
+
+    def setX2_0Value(self, x2_0_val):
+        self.x2_0 = x2_0_val
+
 '''
 a = Simulation()
 a.RK4()

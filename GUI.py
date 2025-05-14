@@ -58,7 +58,7 @@ class ChartFrame(wx.Frame):
             ampl_box,
             value=1,
             minValue=1,
-            maxValue=20,
+            maxValue=100,
             style=wx.SL_HORIZONTAL | wx.SL_LABELS
         )
         self.ampl_slider.Bind(wx.EVT_SLIDER, self.on_signal_amplitude_change)  # slider event
@@ -72,7 +72,7 @@ class ChartFrame(wx.Frame):
             freq_box,
             value=1,
             minValue=1,
-            maxValue=20,
+            maxValue=50,
             style=wx.SL_HORIZONTAL | wx.SL_LABELS
         )
         self.freq_slider.Bind(wx.EVT_SLIDER, self.on_signal_frequency_change)  # slider event
@@ -84,7 +84,7 @@ class ChartFrame(wx.Frame):
         sigTime_sizer = wx.StaticBoxSizer(sigTime_box, wx.VERTICAL)
         self.sigTime_slider = wx.Slider(
             sigTime_box,
-            value=1,
+            value=2,
             minValue=1,
             maxValue=20,
             style=wx.SL_HORIZONTAL | wx.SL_LABELS
@@ -114,7 +114,7 @@ class ChartFrame(wx.Frame):
             iter_box,
             value=10,
             minValue=1,
-            maxValue=20,
+            maxValue=200,
             style=wx.SL_HORIZONTAL | wx.SL_LABELS
         )
         self.iter_slider.Bind(wx.EVT_SLIDER, self.on_iter_change)  # slider event
@@ -122,7 +122,7 @@ class ChartFrame(wx.Frame):
         control_sizer.Add(iter_sizer, 0, wx.EXPAND | wx.ALL, 10)
 
         # step_size slider
-        step_size_box = wx.StaticBox(control_panel, label="Step size")
+        step_size_box = wx.StaticBox(control_panel, label="Step size x0.001")
         step_size_sizer = wx.StaticBoxSizer(step_size_box, wx.VERTICAL)
         self.step_size_slider = wx.Slider(
             step_size_box,
@@ -190,6 +190,34 @@ class ChartFrame(wx.Frame):
         self.n2_slider.Bind(wx.EVT_SLIDER, self.on_n2_change)  # slider event
         n2_sizer.Add(self.n2_slider, 0, wx.EXPAND | wx.ALL, 5)
         control_sizer.Add(n2_sizer, 0, wx.EXPAND | wx.ALL, 10)
+
+        # x1 initial condition
+        x1_0_box = wx.StaticBox(control_panel, label="x1_0 initial value")
+        x1_0_sizer = wx.StaticBoxSizer(x1_0_box, wx.VERTICAL)
+        self.x1_0_slider = wx.Slider(
+            x1_0_box,
+            value=0,
+            minValue=-10,
+            maxValue=10,
+            style=wx.SL_HORIZONTAL | wx.SL_LABELS
+        )
+        self.x1_0_slider.Bind(wx.EVT_SLIDER, self.on_x1_0_change)  # slider event
+        x1_0_sizer.Add(self.x1_0_slider, 0, wx.EXPAND | wx.ALL, 5)
+        control_sizer.Add(x1_0_sizer, 0, wx.EXPAND | wx.ALL, 10)
+
+        # x2 initial condition
+        x2_0_box = wx.StaticBox(control_panel, label="x2_0 initial value")
+        x2_0_sizer = wx.StaticBoxSizer(x2_0_box, wx.VERTICAL)
+        self.x2_0_slider = wx.Slider(
+            x2_0_box,
+            value=0,
+            minValue=-10,
+            maxValue=10,
+            style=wx.SL_HORIZONTAL | wx.SL_LABELS
+        )
+        self.x2_0_slider.Bind(wx.EVT_SLIDER, self.on_x2_0_change)  # slider event
+        x2_0_sizer.Add(self.x2_0_slider, 0, wx.EXPAND | wx.ALL, 5)
+        control_sizer.Add(x2_0_sizer, 0, wx.EXPAND | wx.ALL, 10)
 
         # Button
         self.update_btn = wx.Button(control_panel, label="Update chart")
@@ -312,6 +340,12 @@ class ChartFrame(wx.Frame):
 
     def on_n2_change(self, event):
         self.chartData.setN2Value(self.n2_slider.GetValue())
+
+    def on_x1_0_change(self, event):
+        self.chartData.setX1_0Value(self.x1_0_slider.GetValue())
+
+    def on_x2_0_change(self, event):
+        self.chartData.setX2_0Value(self.x2_0_slider.GetValue())
 
 
 if __name__ == '__main__':
