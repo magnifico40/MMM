@@ -164,49 +164,9 @@ class Simulation:
     def setX2_0Value(self, x2_0_val):
         self.x2_0 = x2_0_val
 
-'''
-a = Simulation()
-a.RK4()
-a.Euler()
-x1Data, x2Data, x1tData = a.getRK4ChartData()
-y1Data, y2Data, y1tData = a.getEulerChartData()
+    def setJ1Value(self, j1_val):
+        self.J1 = j1_val
 
-"""
+    def setJ2Value(self, j2_val):
+        self.J2 = j2_val
 
-
-plt.figure(figsize=(10, 8))
-plt.plot(x1tData, x1Data, label="Położenie  RK4 ")
-plt.plot(x1tData, x2Data, label="Prędkość RK4")
-plt.plot(y1tData, x2Data, label="Położenie Euler")
-plt.plot(y1tData, x2Data, label="Prędkość Euler")
-plt.xlabel("Czas [s]")
-plt.ylabel("Wartości")
-plt.title("Trajektoria (RK4)")
-plt.legend()
-plt.grid()
-
-plt.show()
-
-
-#Alternative View for testing
-
-plt.figure(figsize=(10, 8))
-plt.subplot(2, 1, 1)
-plt.plot(x1tData, x1Data, label="RK4 (Pozycja wału 2)")
-plt.plot(y1tData, y1Data, label="E (Pozycja wału 2)")
-plt.xlabel("Czas [s]")
-plt.ylabel("Angle [rad]")
-plt.title("Trajektoria (RK4)")
-plt.legend()
-plt.grid()
-
-plt.subplot(2, 1, 2)
-plt.plot(x1tData, x2Data, label="RK4 (Prędkość wału 2)")
-plt.plot(y1tData, y2Data, label="E (Prędkość wału 2)")
-plt.xlabel("Czas [s]")
-plt.ylabel("Speed [rad/s]")
-plt.title("Trajektoria (Euler)")
-plt.legend()
-plt.grid()
-plt.show()
-'''
