@@ -48,7 +48,7 @@ class Simulation:
         value = self.amplitude * np.sin(2 * np.pi * self.frequency * readTime)
         return value
 
-    def __f(self, x1, x2, t):
+    def __f(self, x1, x2, t): # f - prędkość / 
         a = (-self.b) / (self.J2 + self.n ** 2 * self.J1)
         b = (-self.k) / (self.J2 + self.n ** 2 * self.J1)
         c = (1/self.n) / (self.J2 + self.n ** 2 * self.J1)
@@ -67,8 +67,13 @@ class Simulation:
         #return a * x1 + b * x2 + c * tm
         return a * x2 + b * x1 + c * tm
 
-    def __g(self, x1, x2, t): 
+    def __g(self, x1, x2, t): # g - 
         return x2
+
+    #Rungego Kuttego
+    #zamiast zgadywać wartość, bieże 4 próby i robi z nich średnią
+    #dużo dokładniejszy niż euler
+
 
     def __RK4(self):
         self.RKx1Values.clear()
@@ -82,19 +87,19 @@ class Simulation:
             self.RKx2Values.append(x2_0)
             self.tValues.append(t0)
 
-            k1 = self.h * self.__g(x1_0, x2_0, t0)
+            k1 = self.h * self.__g(x1_0, x2_0, t0) #pochodna w aktualnym punkcie
             l1 = self.h * self.__f(x1_0, x2_0, t0)
 
-            k2 = self.h * self.__g(x1_0 + self.h / 2, x2_0 + k1 / 2, t0 + l1 / 2)
+            k2 = self.h * self.__g(x1_0 + self.h / 2, x2_0 + k1 / 2, t0 + l1 / 2) #pochodne w środku kroku
             l2 = self.h * self.__f(x1_0 + self.h / 2, x2_0 + k1 / 2, t0 + l1 / 2)
 
-            k3 = self.h * self.__g(x1_0 + self.h / 2, x2_0 + k2 / 2, t0 + l2 / 2)
+            k3 = self.h * self.__g(x1_0 + self.h / 2, x2_0 + k2 / 2, t0 + l2 / 2)#pochodne w środku kroku
             l3 = self.h * self.__f(x1_0 + self.h / 2, x2_0 + k2 / 2, t0 + l2 / 2)
 
-            k4 = self.h * self.__g(x1_0 + self.h, x2_0 + k3, t0 + l3)
+            k4 = self.h * self.__g(x1_0 + self.h, x2_0 + k3, t0 + l3)#pochodne na końcu kroku
             l4 = self.h * self.__f(x1_0 + self.h, x2_0 + k3, t0 + l3)
 
-            x1_0 = x1_0 + (k1 + 2*k2 + 2*k3 + k4) / 6
+            x1_0 = x1_0 + (k1 + 2*k2 + 2*k3 + k4) / 6   #średnia z wszystkich prób
             x2_0 = x2_0 + (l1 + 2*l2 + 2*l3 + l4) / 6
             t0 += self.h
 
@@ -111,7 +116,7 @@ class Simulation:
             self.Ex2Values.append(x2_0)
             self.tValues.append(t0)
 
-            x1_0 = x1_0 + self.h * self.__g(x1_0, x2_0, t0)
+            x1_0 = x1_0 + self.h * self.__g(x1_0, x2_0, t0) #pochodna na kóncu kroku
             x2_0 = x2_0 + self.h * self.__f(x1_0, x2_0, t0)
 
     def getRK4ChartData(self):
