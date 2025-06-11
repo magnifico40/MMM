@@ -226,7 +226,7 @@ class ChartFrame(wx.Frame):
         self.j1_slider = wx.Slider(
             j1_box,
             value=0,
-            minValue=0,
+            minValue=1,
             maxValue=10,
             style=wx.SL_HORIZONTAL | wx.SL_LABELS
         )
@@ -240,7 +240,7 @@ class ChartFrame(wx.Frame):
         self.j2_slider = wx.Slider(
             j2_box,
             value=0,
-            minValue=0,
+            minValue=1,
             maxValue=10,
             style=wx.SL_HORIZONTAL | wx.SL_LABELS
         )
