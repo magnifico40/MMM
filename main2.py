@@ -85,14 +85,14 @@ class Simulation:
             k1 = self.h * self.__g(x1_0, x2_0, t0)
             l1 = self.h * self.__f(x1_0, x2_0, t0)
 
-            k2 = self.h * self.__g(x1_0 + self.h / 2, x2_0 + k1 / 2, t0 + l1 / 2)
-            l2 = self.h * self.__f(x1_0 + self.h / 2, x2_0 + k1 / 2, t0 + l1 / 2)
+            k2 = self.h * self.__g(x1_0 + k1 / 2, x2_0 + l1 / 2, t0 + self.h / 2)
+            l2 = self.h * self.__f(x1_0 + k1 / 2, x2_0 + l1 / 2, t0 + self.h / 2)
 
-            k3 = self.h * self.__g(x1_0 + self.h / 2, x2_0 + k2 / 2, t0 + l2 / 2)
-            l3 = self.h * self.__f(x1_0 + self.h / 2, x2_0 + k2 / 2, t0 + l2 / 2)
+            k3 = self.h * self.__g(x1_0 + k2 / 2, x2_0 + l2 / 2, t0 + self.h / 2)
+            l3 = self.h * self.__f(x1_0 + k2 / 2, x2_0 + l2 / 2, t0 + self.h / 2)
 
-            k4 = self.h * self.__g(x1_0 + self.h, x2_0 + k3, t0 + l3)
-            l4 = self.h * self.__f(x1_0 + self.h, x2_0 + k3, t0 + l3)
+            k4 = self.h * self.__g(x1_0 + k3, x2_0 + l3, t0 + self.h)
+            l4 = self.h * self.__f(x1_0 + k3, x2_0 + l3, t0 + self.h)
 
             x1_0 = x1_0 + (k1 + 2*k2 + 2*k3 + k4) / 6
             x2_0 = x2_0 + (l1 + 2*l2 + 2*l3 + l4) / 6

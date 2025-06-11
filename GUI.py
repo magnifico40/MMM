@@ -155,8 +155,8 @@ class ChartFrame(wx.Frame):
         b_sizer = wx.StaticBoxSizer(b_box, wx.VERTICAL)
         self.b_slider = wx.Slider(
             b_box,
-            value=1,
-            minValue=1,
+            value=0,
+            minValue=0,
             maxValue=10,
             style=wx.SL_HORIZONTAL | wx.SL_LABELS
         )
